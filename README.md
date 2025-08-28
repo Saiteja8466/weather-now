@@ -3,7 +3,8 @@
 
 
 ## 🚀 Live Demo
-👉 [Weather Now on Netlify](https://weather-now8466.netlify.app)  
+👉 [Weather Now on Netlify](https://weather-now-saiteja.netlify.app)
+ 
 
 
 ---
