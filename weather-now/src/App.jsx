@@ -1,66 +1,66 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 function App() {
-  const [weather, setWeather] = useState(null);
   const [city, setCity] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [weather, setWeather] = useState(null);
+  const [error, setError] = useState("");
 
-  const fetchWeather = async (cityName) => {
-    if (!cityName) return;
-    setLoading(true);
+  const getWeather = async () => {
     try {
-      const apiKey = "8818fd709208eaec05209e5677462bbf";
-      
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${apiKey}`
-      );
-      const data = await response.json();
-      console.log(data);
-      setWeather(data);
-    } catch (err) {
-      console.error(err);
+      setError("");
       setWeather(null);
-    } finally {
-      setLoading(false);
+
+      // 1. City → Latitude/Longitude
+      const geoRes = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${city}`
+      );
+      const geoData = await geoRes.json();
+
+      if (!geoData.results || geoData.results.length === 0) {
+        setError("City not found 🚫");
+        return;
+      }
+
+      const { latitude, longitude } = geoData.results[0];
+
+      // 2. Weather fetch
+      const weatherRes = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+      );
+      const weatherData = await weatherRes.json();
+
+      setWeather(weatherData.current_weather);
+    } catch (err) {
+      setError("Error fetching weather ❌");
     }
   };
 
-  const handleSearch = () => {
-    fetchWeather(city);
-  };
-
-  useEffect(() => {
-    // Default city weather Hyderabad
-    fetchWeather("Hyderabad");
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6">
-      <h1 className="text-3xl font-bold mb-6">Weather Now</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+      <h1 className="text-2xl font-bold mb-4">🌤️ Weather Now</h1>
 
-      <div className="flex mb-6">
-        <input
-          type="text"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          placeholder="Enter city"
-          className="p-2 rounded-l-md text-black"
-        />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-500 px-4 rounded-r-md hover:bg-blue-600"
-        >
-          Search
-        </button>
-      </div>
+      <input
+        type="text"
+        placeholder="Enter city"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        className="border p-2 rounded w-64 mb-3"
+      />
+      <button
+        onClick={getWeather}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Get Weather
+      </button>
 
-      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500 mt-4">{error}</p>}
 
-      {weather && weather.main && (
-        <div className="bg-gray-800 p-6 rounded-md shadow-md w-80 text-center">
-          <h2 className="text-xl font-bold">{weather.name}</h2>
-          <p className="text-2xl">{weather.main.temp}°C</p>
-          <p>{weather.weather[0].description}</p>
+      {weather && (
+        <div className="mt-4 p-4 bg-white rounded shadow-md">
+          <p>🌡️ Temperature: {weather.temperature}°C</p>
+          <p>💨 Windspeed: {weather.windspeed} km/h</p>
+          <p>🧭 Wind direction: {weather.winddirection}°</p>
+          <p>⏱️ Time: {weather.time}</p>
         </div>
       )}
     </div>

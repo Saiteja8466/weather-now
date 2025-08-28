@@ -25,6 +25,7 @@ A simple React + Vite app to check current weather conditions for any city using
    ```bash
    git clone https://github.com/Saiteja8466/weather-now-app.git
    cd weather-now-app
+<<<<<<< HEAD
 Install dependencies
 
 bash
@@ -40,3 +41,5 @@ Build for production
 bash
 Copy code
 npm run build
+=======
+>>>>>>> bd7fd84 (Add Netlify redirects for SPA)
