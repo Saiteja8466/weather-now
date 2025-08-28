@@ -1,13 +1,10 @@
 # 🌦️ Weather Now
 
-A simple, fast, and responsive weather application built with **React + Vite + Tailwind CSS**.  
-It fetches real-time weather data using the **Open-Meteo API** 🌍.
 
----
 
 ## 🚀 Live Demo
-👉 [Weather Now on Netlify](https://your-app-link.netlify.app)  
-*(Replace with your deployed link once live)*
+👉 [Weather Now on Netlify](https://weather-now8466.netlify.app)  
+
 
 ---
 
